@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import time
+import datetime
 import colorsys
 import sys
 import ST7735
@@ -239,25 +240,29 @@ def main():
                 raw_temp = bme280.get_temperature()
                 raw_data = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
                 save_data(0, raw_data)
+                temp = raw_data
                 display_everything()
                 raw_data = bme280.get_pressure()
                 save_data(1, raw_data)
+                press = raw_data
                 display_everything()
                 raw_data = bme280.get_humidity()
                 save_data(2, raw_data)
-                if proximity < 10:
-                    raw_data = ltr559.get_lux()
-                else:
-                    raw_data = 1
+                humi = raw_data
+                raw_data = ltr559.get_lux()
                 save_data(3, raw_data)
+                lux = raw_data
+                timeNow = round(time.time())
+                dateNow = datetime.datetime.fromtimestamp(timeNow)
+                degree_sign = u"\N{DEGREE SIGN}"
                 display_everything()
-                
-
+                if timeNow % 10 == 0: 
+                   with open("data.txt", "a+") as data_archive:
+                      data_archive.seek(0)
+                      data_archive.write("\n")
+                      data_archive.write(str(dateNow) + " " + (str(timeNow) + " " +(str(temp) + " " + (str(degree_sign) + "C" + " " + (str(humi) + "%" + " " + (str(lux) + "Lux" + " " + (str(press) + "hPa")
 
     # Exit cleanly
-    except KeyboardInterrupt:
-        sys.exit(0)
+            except KeyboardInterrupt:
+                sys.exit(0)
 
-
-if __name__ == "__main__":
-    main()
