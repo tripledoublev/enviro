@@ -260,9 +260,9 @@ def main():
                    with open("data.txt", "a+") as data_archive:
                       data_archive.seek(0)
                       data_archive.write("\n")
-                      data_archive.write(str(dateNow) + " " + (str(timeNow) + " " +(str(temp) + " " + (str(degree_sign) + "C" + " " + (str(humi) + "%" + " " + (str(lux) + "Lux" + " " + (str(press) + "hPa")
+                      data_archive.write(str(dateNow) + " " + str(timeNow) + " " +str(temp) + " " + str(degree_sign) + "C" + " " + str(humi) + "%" + " " + str(lux) + "Lux" + " " + str(press) + "hPa")
 
     # Exit cleanly
-            except KeyboardInterrupt:
-                sys.exit(0)
+    except KeyboardInterrupt:
+        sys.exit(0)
 
