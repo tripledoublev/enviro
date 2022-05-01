@@ -57,7 +57,7 @@ img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
 draw = ImageDraw.Draw(img)
 font_size_small = 10
 font_size_large = 20
-font = ImageFont.truetype(UserFont, font_size_large)
+font = ImageFont.truetype("FreeSans.ttf", font_size_large)
 smallfont = ImageFont.truetype(UserFont, font_size_small)
 x_offset = 2
 y_offset = 2
@@ -66,7 +66,7 @@ message = ""
 
 # The position of the top bar
 top_pos = 25
-
+timeNow = round(time.time())
 # Create a values dict to store the data
 variables = ["temperature",
              "pressure",
@@ -174,14 +174,15 @@ def get_cpu_temperature():
 
 
 def main():
+    count = 0
     # Tuning factor for compensation. Decrease this number to adjust the
     # temperature down, and increase to adjust up
-    factor = 2.25
+    factor = 2
 
     cpu_temps = [get_cpu_temperature()] * 5
 
     delay = 0.5  # Debounce the proximity tap
-    mode = 10    # The starting mode
+    mode = 4   # The starting mode
     last_page = 0
 
     for v in variables:
@@ -253,16 +254,22 @@ def main():
                 save_data(3, raw_data)
                 lux = raw_data
                 timeNow = round(time.time())
-                dateNow = datetime.datetime.fromtimestamp(timeNow)
                 degree_sign = u"\N{DEGREE SIGN}"
                 display_everything()
-                if timeNow % 10 == 0: 
+                count += 1
+                if count % 100 == 1: 
                    with open("data.txt", "a+") as data_archive:
+                      timeNow = round(time.time())
+                      dateNow = datetime.datetime.fromtimestamp(timeNow)
                       data_archive.seek(0)
                       data_archive.write("\n")
-                      data_archive.write(str(dateNow) + " " + str(timeNow) + " " +str(temp) + " " + str(degree_sign) + "C" + " " + str(humi) + "%" + " " + str(lux) + "Lux" + " " + str(press) + "hPa")
+                      data_archive.write(str(dateNow) + " " + str(timeNow) + " " +str(round(temp, 2)) + str(degree_sign) + "C" + " " + str(round(humi, 2)) + "%" + " " + str(round(lux, 2)) + "Lux" + " " + str(round(press,2)) + "hPa")
+                      print(str(dateNow) + " " + str(timeNow) + " " +str(round(temp, 2)) + str(degree_sign) + "C" + " " + str(round(humi, 2)) + "%" + " " + str(round(lux, 2)) + "Lux" + " " + str(round(press,2)) + "hPa")
 
     # Exit cleanly
     except KeyboardInterrupt:
         sys.exit(0)
+
+if __name__ == "__main__":
+    main()
 
